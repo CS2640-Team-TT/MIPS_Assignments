@@ -1,0 +1,159 @@
+#Spencer Dang
+
+#Group memebers: Derek Mori, Tyler Nguyen-Uyemori
+
+#October 26 2023
+
+#Program 1: Getting Familiar with Assembly 
+
+#Goals:
+#Task 1: Getting 2 integer values from the user and outputting them in the Run I/O
+#Task 2: Using the previously gotten 2 integers and perform arithmetic operations on them and output them to the Run I/0
+#Task 3: Comparing the two numbers and seeing if they are the same or if the user output is different
+
+
+
+.data
+prompt1: .asciiz "Enter the first integer: "
+prompt2: .asciiz "Enter the second integer: "
+output_msg1: .asciiz "The user entered: "
+output_msg2: .asciiz " and "
+add_msg: .asciiz "\nAdded Number: "
+sub_msg: .asciiz "\nSubtracted Number: "
+mult_msg: .asciiz "\nMultiplied Number: "
+divide_msg: .asciiz "\nDivided Number: "
+div_by_zero: .asciiz "\nError: Division by zero.\n"
+equal: .asciiz "\nThe two numbers are equal"
+not_equal: .asciiz "\nThe two numbers are not equal"
+
+.text
+main:
+
+#Task 1
+    # Display prompt for the first integer
+    li $v0, 4 		#telling the compiler that we want to print a string 
+    la $a0, prompt1 	#loading the address of the string that we want to print 
+    syscall 		#performing a syscall and telling the compiler to perform the previous task 
+
+    # Read the first integer from the user
+    li $v0, 5 		#telling the compiler that we want an integer input
+    syscall 		#no la cause we don't have an address to load and syscall to tell compiler to get an integer 
+    move $s0, $v0  	#Store the first integer in $s0
+
+    # Display prompt for the second integer
+    li $v0, 4 
+    la $a0, prompt2 	#similar to the explanation above 
+    syscall
+
+    # Read the second integer from the user
+    li $v0, 5
+    syscall 		#similar to the exaplantion above 
+    move $s1, $v0  	# Store the second integer in $s1
+
+    # Print the user inputs with messages
+    li $v0, 4		#telling the compiler to print a certain string 
+    la $a0, output_msg1	#loading the address of the message to be printed 
+    syscall		#syscall to perform the previously mentioned actions 
+
+    li $v0, 1		#telling the compiler to print out an integer 
+    move $a0, $s0  	# Load the first integer from $s0
+    syscall		#tell the comiler to do such tasks listed above 
+
+    li $v0, 4		#telling the compiler that a string needs to be printed
+    la $a0, output_msg2	#loading the address of output message 2 to be printed 
+    syscall		#telling the co0mpiler to perform the tasks above 
+
+    li $v0, 1		#telling the compuler 
+    move $a0, $s1  	# Load the second integer from $s1
+    syscall
+
+#Task 2
+
+    # Calculate the sum of the two numbers
+    add $t1, $s0, $s1
+
+    # Print the sum
+    li $v0, 4 
+    la $a0, add_msg
+    syscall
+
+    li $v0, 1
+    move $a0, $t1
+    syscall
+
+    # Calculate the subtraction of the two numbers
+    sub $t2, $s0, $s1
+
+    # Print the subtraction
+    li $v0, 4
+    la $a0, sub_msg
+    syscall
+
+    li $v0, 1
+    move $a0, $t2
+    syscall
+
+    # Calculate the multiplication of the two numbers
+    mul $t3, $s0, $s1
+
+    # Print the multiplication
+    li $v0, 4
+    la $a0, mult_msg
+    syscall
+
+    li $v0, 1
+    move $a0, $t3
+    syscall
+
+    # Check for division by zero
+    beqz $s1, division_by_zero
+
+    # Calculate the division of the two numbers
+    div $s0, $s1
+
+    # Print the division
+    li $v0, 4
+    la $a0, divide_msg
+    syscall
+
+    li $v0, 1
+    move $a0, $t4
+    syscall
+    
+#Task 3
+
+    #compare the numbers 
+    beq $s0,$s1, equalNum
+    bne $s0,$s1,notEqual
+    
+    j exit
+    
+equalNum:
+    
+    li $v0,4
+    la $a0,equal
+    syscall
+    
+    j exit
+    
+notEqual:
+
+    li $v0,4
+    la $a0,not_equal
+    syscall
+    
+    j exit
+	
+
+division_by_zero:
+    # Handle division by zero
+    li $v0, 4
+    la $a0, div_by_zero
+    syscall
+    
+    j exit
+
+exit:
+    # Exit the program
+    li $v0, 10
+    syscall
