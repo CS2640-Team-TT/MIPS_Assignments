@@ -109,8 +109,7 @@ main:
     beqz $s1, division_by_zero
 
     # Calculate the division of the two numbers
-    div $t4, 
-$s0, $s1
+    div $t4, $s0, $s1
 
     # Print the division
     li $v0, 4
